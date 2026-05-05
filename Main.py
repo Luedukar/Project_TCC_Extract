@@ -17,8 +17,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-#loop para a função principal (execuções em um intervalor de 8 horas)
-@repeat(every(3).minutes)
+#loop para a função principal (execuções em um intervalo de 8 horas)
+@repeat(every(5).minutes)
 
 def main():
     #extrair todos os IDs de produtos
@@ -86,6 +86,16 @@ def main():
         tm.sleep(30)
     
     logger.info("fim do loop")
+
+#loop para função auxiliar 1 (reset de avisos diarios) (execuções em um intervalo de 4 horas)
+@repeat(every(7).minutes)
+def ResetAvisos():
+    cb.ResetAviso()
+
+#loop para função auxiliar 2 (limpeza da tabela two_factor_codes) (execuções em um intervalo de 24 horas)
+@repeat(every(8).minutes)
+def alteracoesBanco():
+    cb.LimparDuploFator()
 
 while True:
     schedule.run_pending()

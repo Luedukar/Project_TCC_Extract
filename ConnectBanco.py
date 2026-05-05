@@ -162,3 +162,20 @@ def ResetAviso():
     except psycopg2.Error as e:
         logger.error(f"Falha ao resetar avisos diários: {e}")
         return False
+    
+def LimparDuploFator():
+    """
+    Exclui da tabela two_factor_codes os códigos de duplo fator que não são mais utilizados e já estão antigo (24 horas).
+    """
+    try:
+        with get_connection() as con:
+            with con.cursor() as cur:
+                cur.execute(
+                    "DELETE FROM two_factor_codes WHERE mfa_status = FALSE OR attempts >= 3 OR expires_at < NOW();"
+                )
+                con.commit()
+                logger.info(f"Exclusão de 2fa antigos realizada com sucesso. Linhas afetadas: {cur.rowcount}")
+                return True
+    except psycopg2.Error as e:
+        logger.error(f"Falha ao excluir códigos 2fa antigos: {e}")
+        return False
