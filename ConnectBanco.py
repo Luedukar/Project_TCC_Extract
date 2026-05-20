@@ -179,3 +179,20 @@ def LimparDuploFator():
     except psycopg2.Error as e:
         logger.error(f"Falha ao excluir códigos 2fa antigos: {e}")
         return False
+    
+def LimparUsers():
+    """
+    Exclui da tabela users os usuarios que foram desativados a mais de 36 horas (3 dias)
+    """
+    try:
+        with get_connection() as con:
+            with con.cursor() as cur:
+                cur.execute(
+                    "DELETE FROM users WHERE status = 'desativado' AND NOW() - datadesativacao >= INTERVAL '5 minutes'"
+                )
+                con.commit()
+                logger.info(f"Exclusão de users desativados realizada com sucesso. Linhas afetadas: {cur.rowcount}")
+                return True
+    except psycopg2.Error as e:
+        logger.error(f"Falha ao excluir users desativados: {e}")
+        return False

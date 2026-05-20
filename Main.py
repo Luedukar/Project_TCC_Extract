@@ -85,17 +85,18 @@ def main():
         #Fim do loop
         tm.sleep(30)
     
-    logger.info("fim do loop")
+    logger.info("fim do loop de produtos")
 
 #loop para função auxiliar 1 (reset de avisos diarios) (execuções em um intervalo de 4 horas)
-@repeat(every(7).minutes)
+@repeat(every(1).minutes)
 def ResetAvisos():
     cb.ResetAviso()
 
 #loop para função auxiliar 2 (limpeza da tabela two_factor_codes) (execuções em um intervalo de 24 horas)
-@repeat(every(8).minutes)
+@repeat(every(2).minutes)
 def alteracoesBanco():
     cb.LimparDuploFator()
+    cb.LimparUsers()
 
 while True:
     schedule.run_pending()
